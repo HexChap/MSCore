@@ -77,7 +77,7 @@ def setup_app(
 
     :param app: Instance of FastAPI class
     :param db_url: DB url
-    :param model_paths: Relative paths to files, containing tortoise models
+    :param model_paths: Relative dot notation paths to files, containing tortoise models
 
     :param app: Instance of FastAPI class
     :param routers_path: Relative path to the routers dir
