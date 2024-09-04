@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ms-core"
+version = "0.1.0"
+authors = [
+  { name="Kirill Ibragimov", email="hexchap@gmail.com" },
+]
+description = "Core functionality for all the HTTP microservices, used in my projects"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "tortoise-orm[asyncpg]~=0.21.6",
+    "fastapi~=0.112.2",
+    "multimethod~=1.12",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows",
+]
+
+[project.urls]
+GitHub = "https://github.com/HexChap/MSCore"
+Issues = "https://github.com/HexChap/MSCore/issues"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["tests/", ".idea/"]

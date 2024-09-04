@@ -1,0 +1,1 @@
+Core functionality for all the HTTP microservices, used in my projects
