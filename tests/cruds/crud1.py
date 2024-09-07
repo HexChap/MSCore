@@ -5,8 +5,8 @@ from ms_core import I18nCRUD
 from tests.models.test1 import Test1
 
 Tortoise.init_models(["tests.models.test1"], "models")
-Test1Schema = pydantic_model_creator(Test1)
-Test1Payload = pydantic_model_creator(Test1, name="Test1Payload", exclude_readonly=True)
+Test1Schema = pydantic_model_creator(Test1, name="Test1Schema")
+Test1Create = pydantic_model_creator(Test1, name="Test1Create", exclude_readonly=True)
 
 
 class Test1CRUD(I18nCRUD[Test1, Test1Schema]):

@@ -7,7 +7,7 @@ from ms_core.bases import BaseCRUD
 
 class I18nCRUD[Model: TortoiseModel, Schema: PydanticModel](BaseCRUD[Model, Schema]):
     @classmethod
-    @multimethod
+    @BaseCRUD.get_by_id.register
     async def get_by_id(cls, id_: int, lang: str) -> Schema | None:
         return await cls.get_by(id=id_, tuple_lang=lang)
 
@@ -30,6 +30,6 @@ class I18nCRUD[Model: TortoiseModel, Schema: PydanticModel](BaseCRUD[Model, Sche
         query = query.all().offset(offset).limit(limit)
 
         for item in await query:
-            result.append(item)
+            result.append(cls.schema.model_construct(**item.__dict__))
 
         return result

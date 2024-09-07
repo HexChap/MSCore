@@ -46,14 +46,13 @@ class BaseCRUD[Model: TortoiseModel, Schema: PydanticModel]:
 
     @classmethod
     @multimethod
-    async def get_all(cls, limit: int = 50, offset: int = 0) -> list[Model]:
+    async def get_all(cls, limit: int = 50, offset: int = 0) -> list[Schema]:
         """Bulk fetches from db, but without prefetching and validating. For prefetched result use *get_all_prefetch*"""
-
         query = cls.model.all().offset(offset).limit(limit)
         result = []
 
         for item in await query:
-            result.append(item)
+            result.append(cls.schema.model_construct(**item.__dict__))
 
         return result
 
@@ -70,7 +69,7 @@ class BaseCRUD[Model: TortoiseModel, Schema: PydanticModel]:
 
     @classmethod
     async def update_by(cls, payload: Schema | dict, **kwargs) -> Schema | None:
-        if not (instance := await cls.get_by(**kwargs)):
+        if not (instance := await cls.model.get_or_none(**kwargs)):
             return None
 
         as_dict = (
