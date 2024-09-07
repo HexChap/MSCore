@@ -10,7 +10,7 @@ class Test1(I18nModel):
     test = fields.TextField()
 
     test2: fields.ForeignKeyRelation[Test2] = fields.ForeignKeyField(
-        "models.Test2", "test2"
+        "models.Test2", "test1"
     )
 
     class Meta:
