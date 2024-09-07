@@ -1,12 +1,9 @@
-from copy import deepcopy
 from inspect import signature
 from typing import Callable
 
-import makefun
 from fastapi import APIRouter, Path, Query, Body
 from makefun import create_function
 from pydantic import BaseModel
-from tortoise import Model
 
 from ms_core.bases import BaseCRUD
 
