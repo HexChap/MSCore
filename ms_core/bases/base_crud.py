@@ -1,6 +1,7 @@
 from multimethod import multimethod
 from tortoise import Model as TortoiseModel
 from tortoise.contrib.pydantic import PydanticModel
+from tortoise.exceptions import DoesNotExist
 
 
 class BaseCRUD[Model: TortoiseModel, Schema: PydanticModel]:
@@ -68,11 +69,9 @@ class BaseCRUD[Model: TortoiseModel, Schema: PydanticModel]:
             return None
 
     @classmethod
-    async def update_by(cls, payload: Schema | dict, **kwargs) -> Schema:
-        instance = await cls.get_by(**kwargs)
-
-        if not instance:
-            raise DoesNotExist
+    async def update_by(cls, payload: Schema | dict, **kwargs) -> Schema | None:
+        if not (instance := await cls.get_by(**kwargs)):
+            return None
 
         as_dict = (
             payload.items()
@@ -86,7 +85,15 @@ class BaseCRUD[Model: TortoiseModel, Schema: PydanticModel]:
         return await cls.schema.from_tortoise_orm(instance)
 
     @classmethod
-    async def delete_by(cls, **kwargs) -> None:
-        instance = await cls.get_by(**kwargs)
+    async def delete_by(cls, **kwargs) -> bool:
+        """
+        Delete an item by given kwargs.
+
+        :param kwargs: Search parameters
+        :return: False if couldn't find the item, True if deleted successfully
+        """
+        if not (instance := await cls.model.get_or_none(**kwargs)):
+            return False
 
         await instance.delete()
+        return True
