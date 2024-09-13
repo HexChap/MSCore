@@ -36,23 +36,22 @@ class BaseCRUD[Model: TortoiseModel, Schema: PydanticModel]:
 
     @classmethod
     @multimethod
-    async def get_all_prefetch(cls) -> list[Schema]:
-        result = []
-
-        for item in await cls.model.all():
-            result.append(await cls.schema.from_tortoise_orm(item))
-
-        return result
-
-    @classmethod
-    @multimethod
-    async def get_all(cls, limit: int = 50, offset: int = 0) -> list[Schema]:
+    async def get_all(
+        cls,
+        prefetch: bool = False,
+        limit: int = 50,
+        offset: int = 0,
+        **extra_filters
+    ) -> list[Schema]:
         """Bulk fetches from db, but without prefetching and validating. For prefetched result use *get_all_prefetch*"""
-        query = cls.model.all().offset(offset).limit(limit)
+        query = cls.model.all().filter(**extra_filters).offset(offset).limit(limit)
         result = []
 
         for item in await query:
-            result.append(cls.schema.model_construct(**item.__dict__))
+            if prefetch:
+                result.append(await cls.schema.from_tortoise_orm(item))
+            else:
+                result.append(cls.schema.model_construct(**item.__dict__))
 
         return result
 

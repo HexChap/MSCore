@@ -13,23 +13,5 @@ class I18nCRUD[Model: TortoiseModel, Schema: PydanticModel](BaseCRUD[Model, Sche
 
     @classmethod
     @multimethod
-    async def get_all_prefetch(cls, lang: str = None) -> list[Schema]:
-        result = []
-        query = cls.model.filter(tuple_lang=lang) if lang else cls.model
-
-        for item in await query.all():
-            result.append(await cls.schema.from_tortoise_orm(item))
-
-        return result
-
-    @classmethod
-    @multimethod
-    async def get_all(cls, limit: int = 50, offset: int = 0, lang: str = None) -> list[Model]:
-        result = []
-        query = cls.model.filter(tuple_lang=lang) if lang else cls.model
-        query = query.all().offset(offset).limit(limit)
-
-        for item in await query:
-            result.append(cls.schema.model_construct(**item.__dict__))
-
-        return result
+    async def get_all(cls, lang: str = None, *args, **kwargs) -> list[Model]:
+        return await super().get_all(*args, **kwargs, tuple_lang=lang)

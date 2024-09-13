@@ -92,8 +92,13 @@ class BaseCRUDRouter[
     async def create(self, payload: SchemaCreate = Body()) -> Schema:
         return await self.crud.create(payload)
 
-    async def get_all(self, prefetch: bool = Query(False)) -> list[Schema]:
-        return await self.crud.get_all_prefetch() if prefetch else await self.crud.get_all()
+    async def get_all(
+            self,
+            prefetch: bool = Query(False),
+            limit: int = Query(50),
+            offset: int = Query(0)
+    ) -> list[Schema]:
+        return await self.crud.get_all(prefetch, limit, offset)
 
     async def get_item(self, item_id: int = Path()) -> Schema | None:
         return await self.crud.get_by_id(item_id)
