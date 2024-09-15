@@ -97,8 +97,9 @@ class BaseCRUDRouter[
             prefetch: bool = Query(False),
             limit: int = Query(50),
             offset: int = Query(0)
-    ) -> list[Schema]:
-        return await self.crud.get_all(prefetch, limit, offset)
+    ) -> tuple[list[Schema], int]:
+        """ Returns all items in the specified range and total count """
+        return await self.crud.get_all(prefetch, limit, offset), await self.crud.model.all().count()
 
     async def get_item(self, item_id: int = Path()) -> Schema | None:
         return await self.crud.get_by_id(item_id)
