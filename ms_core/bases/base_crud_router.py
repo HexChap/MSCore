@@ -8,6 +8,11 @@ from pydantic import BaseModel
 from ms_core.bases import BaseCRUD
 
 
+class GetAllResponse[Schema: BaseModel](BaseModel):
+    items: list[Schema]
+    total: int
+
+
 class BaseCRUDRouter[
     Schema: BaseModel,
     SchemaCreate: BaseModel
@@ -40,7 +45,7 @@ class BaseCRUDRouter[
             self.get_all: {
                 "path": "/",
                 "methods": ["GET"],
-                "response_model": list[schema]
+                "response_model": GetAllResponse[schema]
             },
             self.get_item: {
                 "path": "/{item_id}",
@@ -95,11 +100,14 @@ class BaseCRUDRouter[
     async def get_all(
             self,
             prefetch: bool = Query(False),
-            limit: int = Query(50),
-            offset: int = Query(0)
-    ) -> tuple[list[Schema], int]:
+            limit: int = Query(50, ge=1, le=100),
+            offset: int = Query(0, ge=0)
+    ) -> GetAllResponse[type[Schema]]:
         """ Returns all items in the specified range and total count """
-        return await self.crud.get_all(prefetch, limit, offset), await self.crud.model.all().count()
+        return GetAllResponse(
+            items=await self.crud.get_all(prefetch, limit, offset),
+            total=await self.crud.model.all().count()
+        )
 
     async def get_item(self, item_id: int = Path()) -> Schema | None:
         return await self.crud.get_by_id(item_id)
