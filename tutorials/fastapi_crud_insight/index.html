@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../setup/">
+        <link rel="prev" href="../fastapi_crud/">
       
       
-        <link rel="next" href="../tortoise_cruds/">
+        <link rel="next" href="../../reference/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Abstract models - MSCore  Docs</title>
+        <title>Dive into internals of the base router - MSCore  Docs</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ms_core.bases.abstract_model" class="md-skip">
+        <a href="#contributor-guide-design-of-basecrudrouter" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Abstract models
+              Dive into internals of the base router
             
           </span>
         </div>
@@ -215,6 +215,8 @@
       
   
   
+    
+  
   
   
     
@@ -237,16 +239,16 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../tutorials/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -264,7 +266,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Tutorial
@@ -280,7 +282,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/setup_app/" class="md-nav__link">
+      <a href="../setup_app/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -302,7 +304,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/abs_models/" class="md-nav__link">
+      <a href="../abs_models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -324,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/tortoise_crud/" class="md-nav__link">
+      <a href="../tortoise_crud/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -346,7 +348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/fastapi_crud/" class="md-nav__link">
+      <a href="../fastapi_crud/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -365,10 +367,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../tutorials/fastapi_crud_insight/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Dive into internals of the base router
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -378,6 +401,86 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goals
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-design-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Design Points
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Design Points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-method-api-via-basecrud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-method API via BaseCRUD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-signature-replacement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Signature Replacement
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoint-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Endpoint Registration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generic-response-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generic Response Models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -415,8 +518,6 @@
       
   
   
-    
-  
   
   
     
@@ -437,16 +538,16 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../reference/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -464,7 +565,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -480,7 +581,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../setup/" class="md-nav__link">
+      <a href="../../reference/setup/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -499,29 +600,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Abstract models
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../reference/abs_models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -531,60 +613,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ms_core.bases.abstract_model" class="md-nav__link">
-    <span class="md-ellipsis">
-      abstract_model
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ms_core.bases.abstract_model.AbstractModel" class="md-nav__link">
-    <span class="md-ellipsis">
-      AbstractModel
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ms_core.bases.i18n_model" class="md-nav__link">
-    <span class="md-ellipsis">
-      i18n_model
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ms_core.bases.i18n_model.I18nModel" class="md-nav__link">
-    <span class="md-ellipsis">
-      I18nModel
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -597,7 +625,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tortoise_cruds/" class="md-nav__link">
+      <a href="../../reference/tortoise_cruds/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -619,7 +647,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../base_crud_router/" class="md-nav__link">
+      <a href="../../reference/base_crud_router/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -658,6 +686,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -666,38 +696,62 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ms_core.bases.abstract_model" class="md-nav__link">
+  <a href="#goals" class="md-nav__link">
     <span class="md-ellipsis">
-      abstract_model
+      Goals
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ms_core.bases.abstract_model.AbstractModel" class="md-nav__link">
+  <a href="#key-design-points" class="md-nav__link">
     <span class="md-ellipsis">
-      AbstractModel
+      Key Design Points
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Design Points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-method-api-via-basecrud" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-method API via BaseCRUD
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#ms_core.bases.i18n_model" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-signature-replacement" class="md-nav__link">
     <span class="md-ellipsis">
-      i18n_model
+      Dynamic Signature Replacement
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#ms_core.bases.i18n_model.I18nModel" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#endpoint-registration" class="md-nav__link">
     <span class="md-ellipsis">
-      I18nModel
+      Endpoint Registration
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generic-response-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generic Response Models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -717,197 +771,55 @@
 
 
 
-  <h1>Abstract models</h1>
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="ms_core.bases.abstract_model"></a>
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="ms_core.bases.abstract_model.AbstractModel" class="doc doc-heading">
-            <code>AbstractModel</code>
-
-
-</h2>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="tortoise.Model">Model</span></code></p>
-
-
-        <p>Abstract Tortoise model, containing essential fields.</p>
-
-
-
-
-
-
-
-              <details class="quote">
-                <summary>Source code in <code>ms_core/bases/abstract_model.py</code></summary>
-                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">AbstractModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot; Abstract Tortoise model, containing essential fields. &quot;&quot;&quot;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="n">created_at</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">DatetimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>        <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
-</span></code></pre></div></td></tr></table></div>
-              </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="ms_core.bases.i18n_model"></a>
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="ms_core.bases.i18n_model.I18nModel" class="doc doc-heading">
-            <code>I18nModel</code>
-
-
-</h2>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="tortoise.Model">Model</span></code></p>
-
-
-        <p>Same abstract model but with tuple_lang field used to indicate row's language</p>
-
-
-
-
-
-
-
-              <details class="quote">
-                <summary>Source code in <code>ms_core/bases/i18n_model.py</code></summary>
-                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-4">4</a></span>
-<span class="normal"><a href="#__codelineno-0-5">5</a></span>
-<span class="normal"><a href="#__codelineno-0-6">6</a></span>
-<span class="normal"><a href="#__codelineno-0-7">7</a></span>
-<span class="normal"><a href="#__codelineno-0-8">8</a></span>
-<span class="normal"><a href="#__codelineno-0-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">I18nModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot; Same abstract model but with tuple_lang field used to indicate row&#39;s language &quot;&quot;&quot;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>    <span class="n">tuple_lang</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>        <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
-</span></code></pre></div></td></tr></table></div>
-              </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
+<h1 id="contributor-guide-design-of-basecrudrouter">Contributor Guide: Design of BaseCRUDRouter</h1>
+<p>This document explains the internal design and key decisions
+behind the <code>BaseCRUDRouter</code> implementation.</p>
+<h2 id="goals">Goals</h2>
+<ul>
+<li>Auto-generate standard CRUD endpoints</li>
+<li>Minimal boilerplate for users</li>
+<li>Safe and type-correct endpoint signatures</li>
+</ul>
+<h2 id="key-design-points">Key Design Points</h2>
+<h3 id="multi-method-api-via-basecrud">Multi-method API via <code>BaseCRUD</code></h3>
+<p>This router relies on a <code>crud</code> object based on <code>BaseCRUD</code> abstraction,
+which provides methods like:</p>
+<ul>
+<li><code>create</code></li>
+<li><code>get_all</code></li>
+<li><code>get_by_id</code></li>
+<li><code>update_by</code></li>
+<li><code>delete_by</code></li>
+</ul>
+<p>This separation enforces SRP (Single Responsibility Principle) and allows
+easy swapping or customizing of storage logic.</p>
+<h3 id="dynamic-signature-replacement">Dynamic Signature Replacement</h3>
+<p>Pydantic generic models (like <code>Schema</code>, <code>SchemaCreate</code>) are passed to the router.
+To ensure FastAPI/OpenAPI generates correct docs and validations, endpoint signatures
+are dynamically replaced using:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">makefun</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_function</span>
+</span></code></pre></div>
+<p>Method <code>_set_actual_schemas</code> inspects the method signature using <code>inspect.signature</code>
+and replaces type annotations for parameters where a
+placeholder (<code>Schema</code>, <code>SchemaCreate</code>) was used.</p>
+<p>This guarantees correct typing in route definitions without forcing
+inheritance or metaclass hacks.</p>
+<h3 id="endpoint-registration">Endpoint Registration</h3>
+<p>All routes are registered in a declarative dict in <code>__init__</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">endpoints</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">],</span> <span class="o">...</span><span class="p">},</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">get_all</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span> <span class="o">...</span><span class="p">},</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="o">...</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This enables clean, transparent route mapping.</p>
+<h3 id="generic-response-models">Generic Response Models</h3>
+<p>List responses use a wrapper model:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">GetAllResponse</span><span class="p">[</span><span class="n">Schema</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">](</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Schema</span><span class="p">]</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">total</span><span class="p">:</span> <span class="nb">int</span>
+</span></code></pre></div>
+<p>It provides standard pagination responses while retaining schema typing.</p>
 
 
 
