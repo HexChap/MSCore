@@ -6,6 +6,7 @@ from ms_core.bases import BaseCRUD
 
 
 class I18nCRUD[Model: TortoiseModel, Schema: PydanticModel](BaseCRUD[Model, Schema]):
+    """ Alternated CRUD for i18n models """
     @classmethod
     @BaseCRUD.get_by_id.register
     async def get_by_id(cls, id_: int, lang: str) -> Schema | None:

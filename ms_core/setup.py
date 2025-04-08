@@ -3,20 +3,21 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
 
-def conf_db(app: FastAPI, db_url: str, model_paths: list[str] = None):
+def conf_db(app: FastAPI, db_url: str, model_paths: list[str] = None) -> None:
     """
-    Generates a list of paths to the models, includes aerich, then registers Tortoise
+    Registers TortoiseORM with the FastAPI application.
 
-    :param app: Instance of FastAPI class
-    :param db_url: DB url
-    :param model_paths: Paths to files, containing tortoise models
-    :return:
+    Args:
+        app: An instance of the FastAPI class.
+        db_url: The database URL to connect to.
+        model_paths: A list of paths to modules containing Tortoise models. If not provided, defaults to None.
+
+    Returns:
+        None
     """
-
     register_tortoise(
         app,
         db_url=db_url,
@@ -26,44 +27,34 @@ def conf_db(app: FastAPI, db_url: str, model_paths: list[str] = None):
     )
 
 
-def include_routers(app: FastAPI, routers_path: Path):
+def include_routers(app: FastAPI, routers_path: Path) -> None:
     """
-    A router must contain the *router* variable, which must be a fastapi.APIRouter subclass \n
-    If router's name starts with "_" it won't be included
+    Includes all routers in the specified directory into the FastAPI application.
 
-    :param app: Instance of FastAPI class
-    :param routers_path: Path to the routers dir
-    :return: None
+    The router file must contain a variable named `router`, which should be an instance of `fastapi.APIRouter`.
+    Files starting with an underscore ("_") or not ending with ".py" will be ignored.
+
+    Args:
+        app: An instance of the FastAPI class.
+        routers_path: The path to the directory containing router files.
+
+    Raises:
+        ValueError: If `routers_path` is not a directory.
+
+    Returns:
+        None
     """
     if not routers_path.is_dir():
-        raise ValueError("routers_path must be a dir")
+        raise ValueError("routers_path must be a directory")
 
-    module_path = '.'.join(routers_path.parts)  # converts to dot notation (package.module.stuff)
+    module_path = '.'.join(routers_path.parts)  # Convert to dot notation (package.module)
 
     for module_name in os.listdir(routers_path):
         if module_name.startswith("_") or not module_name.endswith(".py"):
             continue
 
         module = importlib.import_module(f"{module_path}.{module_name.removesuffix('.py')}")
-
         app.include_router(module.router)
-
-
-def conf_base_middlewares(app: FastAPI):
-    origins = [
-        # "http://localhost:5173",
-        # "http://localhost:3000",
-        "*"
-    ]
-
-    # noinspection PyTypeChecker
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
 
 def setup_app(
@@ -71,18 +62,18 @@ def setup_app(
     db_url: str,
     routers_path: Path,
     model_paths: list[str] = None
-):
+) -> None:
     """
-    Prepares db, middlewares and includes routers
+    Configures the FastAPI application with TortoiseORM and includes all routers from the specified directory.
 
-    :param app: Instance of FastAPI class
-    :param db_url: DB url
-    :param model_paths: Relative dot notation paths to files, containing tortoise models
+    Args:
+        app: An instance of the FastAPI class.
+        db_url: The database URL to connect to.
+        routers_path: The path to the directory containing router files.
+        model_paths: A list of relative paths (dot notation) to modules containing Tortoise models. If not provided, defaults to None.
 
-    :param app: Instance of FastAPI class
-    :param routers_path: Relative path to the routers dir
-    :return: None
+    Returns:
+        None
     """
     conf_db(app, db_url, model_paths)
     include_routers(app, routers_path)
-    conf_base_middlewares(app)
