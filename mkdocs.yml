@@ -8,10 +8,13 @@ nav:
   - Tutorial:
       - tutorials/index.md
       - Easier FastAPI and Tortoise setup: tutorials/setup_app.md
+      - Using abstract models: tutorials/abs_models.md
+      - Reducing boilerplate with CRUD bases: tutorials/tortoise_crud.md
   - Contributing: contributing.md
   - Reference:
       - reference/index.md
       - ms_core.setup: reference/setup.md
+      - Abstract models: reference/abs_models.md
 
 markdown_extensions:
   - pymdownx.highlight:
