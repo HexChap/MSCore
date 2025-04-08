@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../setup_app/">
       
       
-        <link rel="next" href="../abs_models/">
+        <link rel="next" href="../tortoise_crud/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Easier FastAPI and Tortoise setup - MSCore  Docs</title>
+        <title>Using abstract models - MSCore  Docs</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#folder-layout" class="md-skip">
+        <a href="#abstract-models-in-ms_core" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Easier FastAPI and Tortoise setup
+              Using abstract models
             
           </span>
         </div>
@@ -275,6 +275,28 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_app/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Easier FastAPI and Tortoise setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -289,7 +311,7 @@
           
   
   <span class="md-ellipsis">
-    Easier FastAPI and Tortoise setup
+    Using abstract models
     
   </span>
   
@@ -301,7 +323,7 @@
         
   
   <span class="md-ellipsis">
-    Easier FastAPI and Tortoise setup
+    Using abstract models
     
   </span>
   
@@ -322,38 +344,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#abstract-models-in-ms_core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstract Models in ms_core
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Design Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-abstract-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Abstract Models
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Abstract Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abstractmodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      AbstractModel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Example
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#folder-layout" class="md-nav__link">
     <span class="md-ellipsis">
-      Folder layout
+      Folder Layout
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#create-a-model" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#define-your-model" class="md-nav__link">
     <span class="md-ellipsis">
-      Create a model
+      Define Your Model
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#create-a-router" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a router
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setup-app" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setup app
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -361,28 +422,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../abs_models/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Using abstract models
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -570,38 +609,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#abstract-models-in-ms_core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstract Models in ms_core
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Design Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-abstract-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Abstract Models
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Abstract Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abstractmodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      AbstractModel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Example
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#folder-layout" class="md-nav__link">
     <span class="md-ellipsis">
-      Folder layout
+      Folder Layout
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#create-a-model" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#define-your-model" class="md-nav__link">
     <span class="md-ellipsis">
-      Create a model
+      Define Your Model
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#create-a-router" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a router
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setup-app" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setup app
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -621,68 +699,77 @@
 
 
 
-  <h1>Easier FastAPI and Tortoise setup</h1>
+  <h1>Using abstract models</h1>
 
-<p><a href="/reference/setup#ms_core.setup.setup_app"><code>ms_core.setup_app</code></a> function configures TortoiseORM to work with 
-FastAPI, registers Tortoise models and includes <code>fastapi.APIRouter</code>s to the provided 
-FastAPI instance. Doing these action separately is possible by using 
-<a href="/reference/setup#ms_core.setup.conf_db"><code>ms_core.setup.conf_db</code></a> and <a href="/reference/setup#ms_core.setup.include_routers"><code>ms_core.setup.include_routers</code></a></p>
-<h2 id="folder-layout">Folder layout</h2>
-<p>This tutorial implies specific folder layout. Following example have <code>main.py</code> and <code>app</code> directory
-in their root. <code>app</code> directory contains <code>routers</code> and <code>models.py</code>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>├── main.py
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── app
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── routers
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   │   ├── users.py
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── models.py
-</span></code></pre></div></p>
-<h2 id="create-a-model">Create a model</h2>
-<p>Create a file named <code>models.py</code> in the <code>app</code> directory. Inside the file place model named <code>User</code></p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tortoise</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tortoise</span><span class="w"> </span><span class="kn">import</span> <span class="n">fields</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">created_at</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">DatetimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;users&quot;</span>
+<h2 id="abstract-models-in-ms_core">Abstract Models in <code>ms_core</code></h2>
+<p><code>ms_core.models</code> provides base abstract models designed to standardize common fields across your TortoiseORM models.</p>
+<p>These abstract models are not meant to be used directly. Instead, inherit from them when defining your own models to automatically include common fields like <code>id</code> and <code>created_at</code>.</p>
+<h2 id="design-motivation">Design Motivation</h2>
+<p>Defining these abstract models helps to:</p>
+<ul>
+<li>Ensure consistency across database tables.</li>
+<li>Reduce duplication of common field declarations.</li>
+<li>Provide a clean, extendable structure for future shared fields (like <code>updated_at</code> or <code>is_deleted</code>).</li>
+</ul>
+<hr />
+<h2 id="available-abstract-models">Available Abstract Models</h2>
+<h3 id="abstractmodel"><code>AbstractModel</code></h3>
+<p>Located in: <code>ms_core.models</code></p>
+<p>Base model that provides:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>IntField</td>
+<td>Primary key auto-increment field.</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>DatetimeField</td>
+<td>Auto-populated creation timestamp.</td>
+</tr>
+</tbody>
+</table>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tortoise</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">fields</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">AbstractModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot; Abstract Tortoise model, containing essential fields. &quot;&quot;&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="nb">id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">IntField</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">created_at</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">DatetimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
 </span></code></pre></div>
-<h2 id="create-a-router">Create a router</h2>
-<p>Create <code>routers</code> in <code>app</code> directory. Inside it place <code>users.py</code> with a router and some route:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/users/&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;users&quot;</span><span class="p">])</span>
+<hr />
+<h2 id="usage-example">Usage Example</h2>
+<h3 id="folder-layout">Folder Layout</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>├── main.py
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── app
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│   ├── models.py
+</span></code></pre></div>
+<h3 id="define-your-model">Define Your Model</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ms_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractModel</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">tortoise</span><span class="w"> </span><span class="kn">import</span> <span class="n">fields</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">(</span><span class="n">AbstractModel</span><span class="p">):</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{id_}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_by_id</span><span class="p">(</span><span class="n">id_</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="k">return</span> <span class="k">await</span> <span class="n">User</span><span class="o">.</span><span class="n">get_or_none</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;users&quot;</span>
 </span></code></pre></div>
-<h2 id="setup-app">Setup app</h2>
-<p>Create a file named <code>main.py</code> in the root directory with:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ms_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_app</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">application</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">setup_app</span><span class="p">(</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">application</span><span class="p">,</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="s2">&quot;sqlite:///:memory:&quot;</span><span class="p">,</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;app&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;routers&quot;</span><span class="p">,</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="p">[</span><span class="s2">&quot;app.models&quot;</span><span class="p">]</span>  <span class="c1"># module path to a file containing models</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="p">)</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;main:application&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">reload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span></code></pre></div>
+<p>By inheriting from <code>AbstractModel</code> you automatically get the <code>id</code> and <code>created_at</code> fields.</p>
+<hr />
+<blockquote>
+<p>Note: Always declare <code>Meta.abstract = True</code> in abstract models to prevent them from creating their own database tables.</p>
+</blockquote>
 
 
 
