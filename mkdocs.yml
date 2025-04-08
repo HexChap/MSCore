@@ -10,11 +10,15 @@ nav:
       - Easier FastAPI and Tortoise setup: tutorials/setup_app.md
       - Using abstract models: tutorials/abs_models.md
       - Reducing boilerplate with CRUD bases: tutorials/tortoise_crud.md
+      - Even less boilerplate with BaseRouterCRUD: tutorials/fastapi_crud.md
+      - Dive into internals of the base router: tutorials/fastapi_crud_insight.md
   - Contributing: contributing.md
   - Reference:
       - reference/index.md
       - ms_core.setup: reference/setup.md
       - Abstract models: reference/abs_models.md
+      - Base DB CRUDs: reference/tortoise_cruds.md
+      - BaseCRUDRouter: reference/base_crud_router.md
 
 markdown_extensions:
   - pymdownx.highlight:
