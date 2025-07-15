@@ -4,9 +4,10 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
+from tortoise.backends.base.config_generator import generate_config
 
 
-def conf_db(app: FastAPI, db_url: str, model_paths: list[str] = None) -> None:
+def conf_db(app: FastAPI, db_url: str, model_paths: list[str] | None = None) -> None:
     """
     Registers TortoiseORM with the FastAPI application.
 
@@ -47,22 +48,23 @@ def include_routers(app: FastAPI, routers_path: Path) -> None:
     if not routers_path.is_dir():
         raise ValueError("routers_path must be a directory")
 
-    module_path = '.'.join(routers_path.parts)  # Convert to dot notation (package.module)
+    module_path = ".".join(
+        routers_path.parts
+    )  # Convert to dot notation (package.module)
 
     for module_name in os.listdir(routers_path):
         if module_name.startswith("_") or not module_name.endswith(".py"):
             continue
 
-        module = importlib.import_module(f"{module_path}.{module_name.removesuffix('.py')}")
+        module = importlib.import_module(
+            f"{module_path}.{module_name.removesuffix('.py')}"
+        )
         app.include_router(module.router)
 
 
 def setup_app(
-    app: FastAPI,
-    db_url: str,
-    routers_path: Path,
-    model_paths: list[str] = None
-) -> None:
+    app: FastAPI, db_url: str, routers_path: Path, model_paths: list[str] | None = None
+) -> dict:
     """
     Configures the FastAPI application with TortoiseORM and includes all routers from the specified directory.
 
@@ -77,3 +79,8 @@ def setup_app(
     """
     conf_db(app, db_url, model_paths)
     include_routers(app, routers_path)
+
+    return generate_config(
+        db_url,
+        app_modules={"models": model_paths or ["models"]},
+    )

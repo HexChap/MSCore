@@ -12,16 +12,16 @@ application = FastAPI(
     title="TemplateMicroservice",
 )
 
-models = []
+models = ["aerich.models"]
 for app_dir in os.listdir(root / "models"):
     if not app_dir.startswith("_"):
-        models.append(f'tests.models.{app_dir.removesuffix(".py")}')
+        models.append(f"tests.models.{app_dir.removesuffix('.py')}")
 
-setup_app(
+tortoise_conf = setup_app(
     application,
-    "sqlite://:memory:",
+    "asyncpg://postgres:postgres@localhost:5432/mscore_test",
     Path("tests") / "routers",
-    models
+    models,
 )
 
 

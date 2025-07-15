@@ -8,6 +8,7 @@ from tests.models.test2 import Test2
 
 class Test1(I18nModel):
     test = fields.TextField()
+    # test_migrate = fields.IntField()
 
     test2: fields.ForeignKeyRelation[Test2] = fields.ForeignKeyField(
         "models.Test2", "test1"

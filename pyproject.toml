@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ms-core"
-version = "0.1.6"
+version = "0.1.7"
 authors = [
   { name="Kirill Ibragimov", email="hexchap@gmail.com" },
 ]
@@ -12,10 +12,10 @@ description = "Core functionality for all the HTTP microservices, used in my pro
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "tortoise-orm[asyncpg]~=0.21.6",
-    "fastapi~=0.112.2",
-    "multimethod~=1.12",
-    "makefun~=1.15.4"
+    "tortoise-orm[asyncpg]>=0.21.6",
+    "fastapi>=0.112.2",
+    "multimethod>=1.12",
+    "makefun>=1.15.4",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -28,3 +28,10 @@ Issues = "https://github.com/HexChap/MSCore/issues"
 
 [tool.hatch.build.targets.sdist]
 exclude = ["tests/", ".idea/"]
+
+[dependency-groups]
+dev = [
+    "aerich>=0.9.1",
+    "uvicorn>=0.35.0",
+]
+
