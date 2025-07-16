@@ -1,6 +1,6 @@
 [`ms_core.setup_app`][1] function configures TortoiseORM to work with 
-FastAPI, registers Tortoise models and includes `fastapi.APIRouter`s to the provided 
-FastAPI instance. Doing these action separately is possible by using 
+FastAPI, registers Tortoise models, includes `fastapi.APIRouter`s to the provided 
+FastAPI instance and returns TortoiseORM config dict. Doing these action separately is possible by using 
 [`ms_core.setup.conf_db`][2] and [`ms_core.setup.include_routers`][3]
 
 ## Folder layout
