@@ -6,5 +6,5 @@ router = BaseCRUDRouter[Test2Schema, Test2Create](
     schema=Test2Schema,
     schema_create=Test2Create,
     prefix="/test2",
-    tags=["test2"]
+    tags=["test2"],
 )

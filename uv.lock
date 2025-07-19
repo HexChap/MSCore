@@ -450,7 +450,7 @@ wheels = [
 
 [[package]]
 name = "ms-core"
-version = "0.1.7"
+version = "0.1.81"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
