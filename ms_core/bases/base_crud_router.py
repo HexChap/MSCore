@@ -13,10 +13,7 @@ class GetAllResponse[Schema: BaseModel](BaseModel):
     total: int
 
 
-class BaseCRUDRouter[
-    Schema: BaseModel,
-    SchemaCreate: BaseModel
-](APIRouter):
+class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
     """
     A router that dynamically generates CRUD endpoints based on provided schemas and CRUD class.
 
@@ -26,6 +23,10 @@ class BaseCRUDRouter[
         schema_create: The Pydantic model for creating data.
         limit: The default number of items to fetch in the get_all endpoint.
         offset: The default offset for fetching items.
+        endpoints: Optional custom endpoint definitions. A dictionary where keys are handler callables
+           and values are dictionaries containing route information
+           (e.g., path, methods, response_model). Use this if you want to get rid of the default endpoints.
+           If not provided, default endpoints will be used.
         *args: Additional arguments for the APIRouter initialization.
         **kwargs: Additional keyword arguments for the APIRouter initialization.
     """
@@ -37,8 +38,9 @@ class BaseCRUDRouter[
         schema_create: type[SchemaCreate],
         limit: int = 50,
         offset: int = 0,
+        endpoints: dict[Callable, dict] | None = None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         """
         Initializes the BaseCRUDRouter with the provided CRUD class and schemas.
@@ -49,6 +51,10 @@ class BaseCRUDRouter[
             schema_create: The Pydantic model for creating data.
             limit: The default number of items to fetch in the get_all endpoint.
             offset: The default offset for fetching items.
+            endpoints: Optional custom endpoint definitions. A dictionary where keys are handler callables
+                       and values are dictionaries containing route information
+                       (e.g., path, methods, response_model). Use this if you want to get rid of the default endpoints.
+                       If not provided, default endpoints will be used.
             *args: Additional arguments for the APIRouter initialization.
             **kwargs: Additional keyword arguments for the APIRouter initialization.
         """
@@ -61,39 +67,45 @@ class BaseCRUDRouter[
         self.limit = limit
         self.offset = offset
 
-        endpoints = {
-            self.create: {
-                "path": "/",
-                "methods": ["POST"],
-                "response_model": schema
-            },
-            self.get_all: {
-                "path": "/",
-                "methods": ["GET"],
-                "response_model": GetAllResponse[schema]
-            },
-            self.get_item: {
-                "path": "/{item_id}",
-                "methods": ["GET"],
-                "response_model": schema | None
-            },
-            self.update: {
-                "path": "/{item_id}",
-                "methods": ["PUT"],
-                "response_model": schema | None
-            },
-            self.delete_item: {
-                "path": "/{item_id}",
-                "methods": ["DELETE"],
-                "response_model": bool
+        _endpoints = (
+            endpoints
+            if endpoints is not None
+            else {
+                self.create: {
+                    "path": "/",
+                    "methods": ["POST"],
+                    "response_model": schema,
+                },
+                self.get_all: {
+                    "path": "/",
+                    "methods": ["GET"],
+                    "response_model": GetAllResponse[schema],
+                },
+                self.get_item: {
+                    "path": "/{item_id}",
+                    "methods": ["GET"],
+                    "response_model": schema | None,
+                },
+                self.update: {
+                    "path": "/{item_id}",
+                    "methods": ["PUT"],
+                    "response_model": schema | None,
+                },
+                self.delete_item: {
+                    "path": "/{item_id}",
+                    "methods": ["DELETE"],
+                    "response_model": bool,
+                },
             }
-        }
-        self.endpoints = self._set_actual_schemas(endpoints)
+        )
+        self.endpoints = self._set_actual_schemas(_endpoints)
 
         for ep, info in self.endpoints.items():
             self.add_api_route(endpoint=ep, **info)
 
-    def _set_actual_schemas(self, endpoints: dict[Callable, dict]) -> dict[Callable, dict]:
+    def _set_actual_schemas(
+        self, endpoints: dict[Callable, dict]
+    ) -> dict[Callable, dict]:
         """
         Updates endpoint schemas to use the actual provided schema classes.
 
@@ -120,9 +132,11 @@ class BaseCRUDRouter[
                     case _:
                         is_replaced = False
 
-            new_ep = create_function(
-                sig.replace(parameters=list(params.values())), ep
-            ) if is_replaced else ep
+            new_ep = (
+                create_function(sig.replace(parameters=list(params.values())), ep)
+                if is_replaced
+                else ep
+            )
 
             new_eps[new_ep] = endpoints[ep]
 
@@ -141,10 +155,10 @@ class BaseCRUDRouter[
         return await self.crud.create(payload)
 
     async def get_all(
-            self,
-            prefetch: bool = Query(False),
-            limit: int = Query(50, ge=1, le=100),
-            offset: int = Query(0, ge=0)
+        self,
+        prefetch: bool = Query(False),
+        limit: int = Query(50, ge=1, le=100),
+        offset: int = Query(0, ge=0),
     ) -> GetAllResponse[type[Schema]]:
         """
         Returns all items in the specified range and total count.
@@ -159,7 +173,7 @@ class BaseCRUDRouter[
         """
         return GetAllResponse(
             items=await self.crud.get_all(prefetch, limit, offset),
-            total=await self.crud.model.all().count()
+            total=await self.crud.model.all().count(),
         )
 
     async def get_item(self, item_id: int = Path()) -> Schema | None:
@@ -174,7 +188,9 @@ class BaseCRUDRouter[
         """
         return await self.crud.get_by_id(item_id)
 
-    async def update(self, payload: SchemaCreate = Body(), item_id: int = Path()) -> Schema | None:
+    async def update(
+        self, payload: SchemaCreate = Body(), item_id: int = Path()
+    ) -> Schema | None:
         """
         Updates an existing item.
 
