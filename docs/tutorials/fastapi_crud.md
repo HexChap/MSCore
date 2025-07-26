@@ -106,17 +106,76 @@ router = BaseCRUDRouter(
 )
 ```
 
-## Path Prefix
+## Adding Dependencies
 
-Use `path_prefix` to add a common prefix to all endpoint paths:
+You can add FastAPI dependencies to any endpoint using the `dependencies` field in `EndpointConfig`:
 
 ```python
+from fastapi import Depends
+from ms_core.routers import BaseCRUDRouter, DefaultEndpoint, EndpointConfig
+
+# Define your dependency functions
+def get_current_user():
+    return {"user_id": 123, "username": "john_doe"}
+
+def admin_required():
+    return {"is_admin": True}
+
+def validate_permissions():
+    # Your validation logic here
+    return True
+
 router = BaseCRUDRouter(
     crud=UserCRUD,
     schema=User,
     schema_create=UserCreate,
-    path_prefix="/api/v1/users",  # All paths will start with this
+    endpoint_configs={
+        # Require authentication for create operations
+        DefaultEndpoint.CREATE: EndpointConfig(
+            path="/",
+            methods=["POST"],
+            dependencies=[get_current_user, admin_required]
+        ),
+        # Only authentication for read operations
+        DefaultEndpoint.GET_ALL: EndpointConfig(
+            path="/",
+            methods=["GET"],
+            dependencies=[get_current_user]
+        ),
+        # Multiple dependencies for sensitive operations
+        DefaultEndpoint.DELETE: EndpointConfig(
+            path="/{item_id}",
+            methods=["DELETE"],
+            dependencies=[get_current_user, admin_required, validate_permissions]
+        )
+    },
+    prefix="/users",
     tags=["users"]
+)
+```
+
+## Custom Endpoints with Dependencies
+
+You can also add custom endpoints after router initialization:
+
+```python
+from fastapi import Path
+from ms_core.routers import EndpointConfig
+
+async def get_user_profile(user_id: int = Path(...)):
+    # Your custom logic here
+    return {"profile": "data"}
+
+# Add custom endpoint with dependencies
+router.add_custom_endpoint(
+    handler=get_user_profile,
+    config=EndpointConfig(
+        path="/profile/{user_id}",
+        methods=["GET"],
+        summary="Get user profile", 
+        description="Get detailed user profile information",
+        dependencies=[get_current_user]  # Require authentication
+    )
 )
 ```
 
@@ -132,7 +191,7 @@ By default, the following endpoints are created:
 | PUT    | `/{item_id}`  | Update item    |
 | DELETE | `/{item_id}`  | Delete item    |
 
-Note: Paths will be prefixed with the router's `prefix` and `path_prefix` settings.
+Note: Paths will be prefixed with the router's `prefix` setting.
 
 ## Response Models
 
@@ -155,40 +214,79 @@ The `get_all` endpoint returns a structured response:
 
 ### Get All Endpoint
 
-* `limit`: Number of items to return (default: 50, max: 100)
-* `offset`: Number of items to skip (default: 0)
+* `limit`: Number of items to return (default: 50, min: 1, max: 100)
+* `offset`: Number of items to skip (default: 0, min: 0)
 * `prefetch`: Whether to prefetch related models (default: false)
 
-## Complete Example
+## Complete Example with Dependencies
 
 ```python
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import HTTPBearer
 from ms_core.routers import BaseCRUDRouter, DefaultEndpoint, EndpointConfig
 from app.models import User, UserCreate
 from app.cruds import UserCRUD
 
 app = FastAPI()
+security = HTTPBearer()
 
-# Customized CRUD router
+# Authentication dependency
+async def get_current_user(token: str = Depends(security)):
+    # Your token validation logic
+    if not token:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return {"user_id": 123, "username": "john_doe"}
+
+# Admin permission dependency  
+async def require_admin(current_user: dict = Depends(get_current_user)):
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin required")
+    return current_user
+
+# Customized CRUD router with dependencies
 router = BaseCRUDRouter(
     crud=UserCRUD,
     schema=User,
     schema_create=UserCreate,
-    # Only include read operations
-    include_endpoints=[
-        DefaultEndpoint.GET_ALL, 
-        DefaultEndpoint.GET_ITEM
-    ],
-    # Custom configuration for list endpoint
     endpoint_configs={
+        # Public read access
         DefaultEndpoint.GET_ALL: EndpointConfig(
-            path="/list",
+            path="/",
             methods=["GET"],
-            summary="Get user list",
-            description="Retrieve a paginated list of users"
+            summary="List users",
+            description="Get paginated list of users"
+        ),
+        DefaultEndpoint.GET_ITEM: EndpointConfig(
+            path="/{item_id}",
+            methods=["GET"],
+            summary="Get user",
+            description="Get user by ID"
+        ),
+        # Authenticated write operations
+        DefaultEndpoint.CREATE: EndpointConfig(
+            path="/",
+            methods=["POST"],
+            summary="Create user",
+            description="Create a new user account",
+            dependencies=[get_current_user]
+        ),
+        DefaultEndpoint.UPDATE: EndpointConfig(
+            path="/{item_id}",
+            methods=["PUT"],
+            summary="Update user", 
+            description="Update existing user",
+            dependencies=[get_current_user]
+        ),
+        # Admin-only operations
+        DefaultEndpoint.DELETE: EndpointConfig(
+            path="/{item_id}",
+            methods=["DELETE"],
+            summary="Delete user",
+            description="Delete user (admin only)",
+            dependencies=[require_admin]
         )
     },
-    path_prefix="/api/v1/users",
+    prefix="/users",
     tags=["users"],
     limit=25  # Default page size
 )
@@ -196,14 +294,18 @@ router = BaseCRUDRouter(
 app.include_router(router)
 ```
 
-This creates:
+This creates a fully configured CRUD API with:
 
-* `GET /api/v1/users/list` → List users with pagination
-* `GET /api/v1/users/{item_id}` → Get specific user
+* Public read endpoints (no authentication required)
+* Authenticated write endpoints (user token required)
+* Admin-only delete endpoint (admin permissions required)
+* Proper OpenAPI documentation with security schemes
 
 ## Notes
 
 * `schema` is a Pydantic model for output responses
 * `schema_create` is a Pydantic model for input (create/update operations)
+* Dependencies are applied using FastAPI's native dependency injection system
 * All endpoints support full OpenAPI documentation generation
 * Type safety is maintained through dynamic signature replacement
+* Dependencies are processed by FastAPI's `add_api_route` method, ensuring proper dependency injection

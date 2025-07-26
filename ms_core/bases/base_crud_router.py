@@ -1,8 +1,8 @@
-from inspect import signature
+from inspect import signature, Parameter
 from typing import Any, Callable, Literal
 from enum import Enum
 
-from fastapi import APIRouter, Path, Query, Body
+from fastapi import APIRouter, Path, Query, Body, Depends
 from makefun import create_function
 from pydantic import BaseModel
 
@@ -35,10 +35,16 @@ class EndpointConfig(BaseModel):
     summary: str | None = None
     description: str | None = None
     deprecated: bool = False
+    dependencies: list[Callable] | None = None  # New field for dependencies
 
     def to_route_kwargs(self) -> dict:
         """Convert config to kwargs for add_api_route, excluding path and endpoint"""
-        return self.model_dump(exclude={"path"}, exclude_none=True)
+        config_dict = self.model_dump(exclude={"path"}, exclude_none=True)
+
+        if self.dependencies:
+            config_dict["dependencies"] = [Depends(dep) for dep in self.dependencies]
+
+        return config_dict
 
 
 class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
@@ -170,6 +176,7 @@ class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
         params = dict(sig.parameters)
         is_replaced = False
 
+        # Replace schema types
         for name, param in params.items():
             if hasattr(param.annotation, "__name__"):
                 match param.annotation.__name__:
@@ -187,20 +194,14 @@ class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
         )
 
     # Method to add endpoints after initialization
-    # def add_custom_endpoint(
-    #     self,
-    #     handler: Callable,
-    #     config: EndpointConfig
-    # ):
-    #     """Add a custom endpoint after router initialization"""
-    #     updated_handler = self._update_handler_signature(handler)
-    #     self.add_api_route(
-    #         path=config.path,
-    #         endpoint=updated_handler,
-    #         **config.to_route_kwargs()
-    #     )
-    # Original handler methods remain the same
+    def add_custom_endpoint(self, handler: Callable, config: EndpointConfig):
+        """Add a custom endpoint after router initialization"""
+        updated_handler = self._update_handler_signature(handler)
+        self.add_api_route(
+            path=config.path, endpoint=updated_handler, **config.to_route_kwargs()
+        )
 
+    # Original handler methods remain the same
     async def _create(self, payload: SchemaCreate = Body()) -> Schema:
         """Creates a new item using the provided schema."""
         return await self.crud.create(payload)
