@@ -1,4 +1,4 @@
-from inspect import signature, Parameter
+from inspect import signature
 from typing import Any, Callable, Literal
 from enum import Enum
 
@@ -6,7 +6,7 @@ from fastapi import APIRouter, Path, Query, Body, Depends
 from makefun import create_function
 from pydantic import BaseModel
 
-from ms_core.bases import BaseCRUD
+from ms_core.bases import CRUD
 
 
 class GetAllResponse[Schema: BaseModel](BaseModel):
@@ -50,7 +50,7 @@ class EndpointConfig(BaseModel):
 class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
     def __init__(
         self,
-        crud: type[BaseCRUD],
+        crud: CRUD,
         schema: type[Schema],
         schema_create: type[SchemaCreate],
         limit: int = 50,
@@ -65,7 +65,7 @@ class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
         Initializes the BaseCRUDRouter with flexible endpoint configuration.
 
         Args:
-            crud: The CRUD class to handle the database operations.
+            crud: The CRUD instance to handle the database operations.
             schema: The Pydantic model for reading data.
             schema_create: The Pydantic model for creating data.
             limit: The default number of items to fetch in the get_all endpoint.
@@ -215,7 +215,7 @@ class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
         """Returns all items in the specified range and total count."""
         return GetAllResponse(
             items=await self.crud.get_all(prefetch, limit, offset),
-            total=await self.crud.model.all().count(),
+            total=await self.crud._model.all().count(),
         )
 
     async def _get_item(self, item_id: int = Path()) -> Schema | None:

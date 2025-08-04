@@ -1,37 +1,39 @@
+# MSCore
+
 Toolkit for writing HTTP microservices using FastAPI, Pydantic and TortoiseORM
 
 ## Installation
 
 Create and activate a virtual environment and then install MSCore:
 
-```
-$ pip install git+https://github.com/HexChap/MSCore#egg=ms_core
+```bash
+pip install git+https://github.com/HexChap/MSCore#egg=ms_core
 ```
 
-## Local documentation
+## Development Setup
 
 1. Clone the repo
-
-```
+```bash
 git clone https://github.com/HexChap/MSCore
 cd MSCore
 ```
 
-2. Init environment
-Linux
-```
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+2. Install dependencies using uv (recommended)
+```bash
+uv sync --group dev
 ```
 
-Windows
-```
-python -m venv .venv && .venv\Scripts\activate
-pip install -r requirements.txt
-```
+## Local Documentation
 
-3. Serve the docs
-
-```
+1. Serve the docs
+```bash
 mkdocs serve
 ```
+
+## Continuous Integration
+
+The project uses GitHub Actions for automated testing:
+- Runs on Python 3.12 and 3.13
+- Includes linting and security checks
+- Generates coverage reports
+- Tests all major functionality
