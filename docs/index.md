@@ -9,4 +9,4 @@ pip install git+https://github.com/HexChap/MSCore#egg=ms_core"
 ```
 
 ---
-See also: [Tutorial](MSCore/tutorials/)
+See also: [Tutorials](tutorials/)

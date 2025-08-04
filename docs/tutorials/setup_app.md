@@ -74,6 +74,6 @@ if __name__ == "__main__":
     uvicorn.run("main:application", port=8000, reload=True)
 ```
 
-[1]: /MSCore/reference/setup#ms_core.setup.setup_app
-[2]: /MSCore/reference/setup#ms_core.setup.conf_db
-[3]: /MSCore/reference/setup#ms_core.setup.include_routers
+[1]: ../../reference/setup#ms_core.setup.setup_app
+[2]: ../../reference/setup#ms_core.setup.conf_db
+[3]: ../../reference/setup#ms_core.setup.include_routers

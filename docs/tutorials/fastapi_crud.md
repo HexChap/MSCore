@@ -19,20 +19,25 @@ generates endpoints for:
 
 ```python
 from fastapi import FastAPI
-from app.models import User, UserCreate
+from tortoise.contrib.pydantic import pydantic_model_creator
 from ms_core.routers import BaseCRUDRouter
-from ms_core.bases import BaseCRUD
+from ms_core.bases import crud_for
+from app.models import User
 
 app = FastAPI()
 
-class UserCRUD(BaseCRUD):
-    model = User
+# Create schemas
+User_Pydantic = pydantic_model_creator(User, name="User")
+UserIn_Pydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
+
+# Create CRUD instance
+user_crud = crud_for(User, User_Pydantic)
 
 # Basic router with all default endpoints
 router = BaseCRUDRouter(
-    crud=UserCRUD,
-    schema=User,         # Read schema
-    schema_create=UserCreate,  # Create/update schema
+    crud=user_crud,
+    schema=User_Pydantic,         # Read schema
+    schema_create=UserIn_Pydantic,  # Create/update schema
     prefix="/users",
     tags=["users"]
 )
@@ -51,9 +56,9 @@ from ms_core.routers import BaseCRUDRouter, DefaultEndpoint
 
 # Only create and get endpoints
 router = BaseCRUDRouter(
-    crud=UserCRUD,
-    schema=User,
-    schema_create=UserCreate,
+    crud=user_crud,
+    schema=User_Pydantic,
+    schema_create=UserIn_Pydantic,
     include_endpoints=[DefaultEndpoint.CREATE, DefaultEndpoint.GET_ALL],
     prefix="/users",
     tags=["users"]
@@ -65,9 +70,9 @@ router = BaseCRUDRouter(
 ```python
 # All endpoints except delete
 router = BaseCRUDRouter(
-    crud=UserCRUD,
-    schema=User,
-    schema_create=UserCreate,
+    crud=user_crud,
+    schema=User_Pydantic,
+    schema_create=UserIn_Pydantic,
     exclude_endpoints=[DefaultEndpoint.DELETE],
     prefix="/users",
     tags=["users"]
@@ -82,9 +87,9 @@ You can customize individual endpoints using the `endpoint_configs` parameter:
 from ms_core.routers import BaseCRUDRouter, DefaultEndpoint, EndpointConfig
 
 router = BaseCRUDRouter(
-    crud=UserCRUD,
-    schema=User,
-    schema_create=UserCreate,
+    crud=user_crud,
+    schema=User_Pydantic,
+    schema_create=UserIn_Pydantic,
     endpoint_configs={
         DefaultEndpoint.CREATE: EndpointConfig(
             path="/create-user",
@@ -111,24 +116,32 @@ router = BaseCRUDRouter(
 You can add FastAPI dependencies to any endpoint using the `dependencies` field in `EndpointConfig`:
 
 ```python
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer
 from ms_core.routers import BaseCRUDRouter, DefaultEndpoint, EndpointConfig
 
+security = HTTPBearer()
+
 # Define your dependency functions
-def get_current_user():
+async def get_current_user(token: str = Depends(security)):
+    # Your token validation logic
+    if not token:
+        raise HTTPException(status_code=401, detail="Invalid token")
     return {"user_id": 123, "username": "john_doe"}
 
-def admin_required():
-    return {"is_admin": True}
+async def admin_required(current_user: dict = Depends(get_current_user)):
+    if not current_user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin required")
+    return current_user
 
 def validate_permissions():
     # Your validation logic here
     return True
 
 router = BaseCRUDRouter(
-    crud=UserCRUD,
-    schema=User,
-    schema_create=UserCreate,
+    crud=user_crud,
+    schema=User_Pydantic,
+    schema_create=UserIn_Pydantic,
     endpoint_configs={
         # Require authentication for create operations
         DefaultEndpoint.CREATE: EndpointConfig(
@@ -159,24 +172,16 @@ router = BaseCRUDRouter(
 You can also add custom endpoints after router initialization:
 
 ```python
-from fastapi import Path
+from fastapi import Path, Depends
 from ms_core.routers import EndpointConfig
 
+@router.get("/profile/{user_id}", dependecies=[Depends(get_current_user)])
 async def get_user_profile(user_id: int = Path(...)):
     # Your custom logic here
-    return {"profile": "data"}
-
-# Add custom endpoint with dependencies
-router.add_custom_endpoint(
-    handler=get_user_profile,
-    config=EndpointConfig(
-        path="/profile/{user_id}",
-        methods=["GET"],
-        summary="Get user profile", 
-        description="Get detailed user profile information",
-        dependencies=[get_current_user]  # Require authentication
-    )
-)
+    user = await user_crud.get_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"profile": user, "additional_data": "..."}
 ```
 
 ## Auto-generated Endpoints
@@ -218,17 +223,60 @@ The `get_all` endpoint returns a structured response:
 * `offset`: Number of items to skip (default: 0, min: 0)
 * `prefetch`: Whether to prefetch related models (default: false)
 
+## Integration with I18n CRUD
+
+For internationalized models, you can use the router with `I18nCRUD`:
+
+```python
+from ms_core.bases import i18n_crud_for
+from app.models import UserI18n
+
+# Create I18n CRUD instance
+user_i18n_crud = i18n_crud_for(UserI18n, UserI18n_Pydantic)
+
+# Custom handler for language-aware endpoints
+async def get_user_by_lang(user_id: int = Path(...), lang: str = Query(...)):
+    return await user_i18n_crud.get_by_id(user_id, lang=lang)
+
+router = BaseCRUDRouter(
+    crud=user_i18n_crud,
+    schema=UserI18n_Pydantic,
+    schema_create=UserI18nIn_Pydantic,
+    prefix="/users",
+    tags=["users"]
+)
+
+# Add custom language-aware endpoint
+router.add_custom_endpoint(
+    handler=get_user_by_lang,
+    config=EndpointConfig(
+        path="/by-lang/{user_id}",
+        methods=["GET"],
+        summary="Get user by language",
+        description="Get user data for specific language"
+    )
+)
+```
+
 ## Complete Example with Dependencies
 
 ```python
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import HTTPBearer
+from tortoise.contrib.pydantic import pydantic_model_creator
 from ms_core.routers import BaseCRUDRouter, DefaultEndpoint, EndpointConfig
-from app.models import User, UserCreate
-from app.cruds import UserCRUD
+from ms_core.bases import crud_for
+from app.models import User
 
 app = FastAPI()
 security = HTTPBearer()
+
+# Create schemas
+User_Pydantic = pydantic_model_creator(User, name="User")
+UserIn_Pydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
+
+# Create CRUD instance
+user_crud = crud_for(User, User_Pydantic)
 
 # Authentication dependency
 async def get_current_user(token: str = Depends(security)):
@@ -245,9 +293,9 @@ async def require_admin(current_user: dict = Depends(get_current_user)):
 
 # Customized CRUD router with dependencies
 router = BaseCRUDRouter(
-    crud=UserCRUD,
-    schema=User,
-    schema_create=UserCreate,
+    crud=user_crud,
+    schema=User_Pydantic,
+    schema_create=UserIn_Pydantic,
     endpoint_configs={
         # Public read access
         DefaultEndpoint.GET_ALL: EndpointConfig(
