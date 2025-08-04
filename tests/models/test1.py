@@ -1,12 +1,9 @@
-from typing import TYPE_CHECKING
-
-from tortoise import fields, Tortoise
-
-from ms_core import AbstractModel, I18nModel
+from tortoise import fields
+from ms_core import AbstractModel
 from tests.models.test2 import Test2
 
 
-class Test1(I18nModel):
+class Test1(AbstractModel):
     test = fields.TextField()
     # test_migrate = fields.IntField()
 

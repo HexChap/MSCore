@@ -23,6 +23,23 @@ cd MSCore
 uv sync --group dev
 ```
 
+## Testing
+
+MSCore includes a comprehensive test suite covering all major components:
+
+### Running Tests
+
+```bash
+# Run all tests
+python -m pytest
+
+# Run with verbose output
+python -m pytest -v
+
+# Run with coverage
+python -m pytest --cov=ms_core --cov-report=html
+```
+
 ## Local Documentation
 
 1. Serve the docs

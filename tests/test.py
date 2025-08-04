@@ -19,7 +19,7 @@ for app_dir in os.listdir(root / "models"):
 
 tortoise_conf = setup_app(
     application,
-    "asyncpg://postgres:postgres@localhost:54320/mscore_test",
+    "asyncpg://postgres:postgres@localhost:5432/mscore_test",
     Path("tests") / "routers",
     models,
 )
