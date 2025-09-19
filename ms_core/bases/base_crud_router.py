@@ -1,12 +1,14 @@
+from enum import Enum
 from inspect import signature
 from typing import Any, Callable, Literal
-from enum import Enum
 
-from fastapi import APIRouter, Path, Query, Body, Depends
+from fastapi import APIRouter, Body, Depends, Path, Query
+from fastapi.params import Security
 from makefun import create_function
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from ms_core.bases import CRUD
+from ms_core.utils import partial_model
 
 
 class GetAllResponse[Schema: BaseModel](BaseModel):
@@ -27,6 +29,8 @@ class DefaultEndpoint(Enum):
 class EndpointConfig(BaseModel):
     """Configuration for individual endpoints"""
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     path: str
     methods: list[str]
     response_model: Any = None
@@ -35,24 +39,32 @@ class EndpointConfig(BaseModel):
     summary: str | None = None
     description: str | None = None
     deprecated: bool = False
-    dependencies: list[Callable] | None = None  # New field for dependencies
+    dependencies: list[Callable | Security] | None = None
 
     def to_route_kwargs(self) -> dict:
         """Convert config to kwargs for add_api_route, excluding path and endpoint"""
         config_dict = self.model_dump(exclude={"path"}, exclude_none=True)
 
         if self.dependencies:
-            config_dict["dependencies"] = [Depends(dep) for dep in self.dependencies]
+            config_dict["dependencies"] = [
+                Depends(dep) if isinstance(dep, Callable) else dep
+                for dep in self.dependencies
+            ]
 
         return config_dict
 
 
-class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
+class BaseCRUDRouter[
+    Schema: BaseModel,
+    SchemaCreate: BaseModel,
+    SchemaUpdate: BaseModel,
+](APIRouter):
     def __init__(
         self,
         crud: CRUD,
         schema: type[Schema],
         schema_create: type[SchemaCreate],
+        schema_update: type[SchemaUpdate] | None = None,
         limit: int = 50,
         offset: int = 0,
         include_endpoints: list[DefaultEndpoint] | Literal["all"] = "all",
@@ -83,6 +95,10 @@ class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
         self.schema = schema
         self.limit = limit
         self.offset = offset
+
+        self.schema_update = (
+            schema_update if schema_update else partial_model(schema_create)
+        )
 
         # Determine which endpoints to include
         if include_endpoints == "all":
@@ -186,6 +202,9 @@ class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
                     case "SchemaCreate":
                         params[name] = param.replace(annotation=self.schema_create)
                         is_replaced = True
+                    case "SchemaUpdate":
+                        params[name] = param.replace(annotation=self.schema_update)
+                        is_replaced = True
 
         return (
             create_function(sig.replace(parameters=list(params.values())), handler)
@@ -223,7 +242,7 @@ class BaseCRUDRouter[Schema: BaseModel, SchemaCreate: BaseModel](APIRouter):
         return await self.crud.get_by_id(item_id)
 
     async def _update(
-        self, payload: SchemaCreate = Body(), item_id: int = Path()
+        self, payload: SchemaUpdate = Body(), item_id: int = Path()
     ) -> Schema | None:
         """Updates an existing item."""
         return await self.crud.update_by(payload, id=item_id)

@@ -1,6 +1,9 @@
 # idea
 .idea
 
+# ruff
+.ruff_cache
+
 #secrets
 cred
 

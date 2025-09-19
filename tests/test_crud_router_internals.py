@@ -1,7 +1,8 @@
 """Unit tests for BaseCRUDRouter internal methods and edge cases."""
 
-import pytest
 from inspect import Parameter, Signature
+
+import pytest
 from makefun import create_function
 from tortoise import Tortoise, fields
 from tortoise.contrib.pydantic import pydantic_model_creator
@@ -9,6 +10,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 from ms_core.bases.abstract_model import AbstractModel
 from ms_core.bases.base_crud import crud_for
 from ms_core.bases.base_crud_router import BaseCRUDRouter, DefaultEndpoint
+from ms_core.utils import partial_model
 
 
 class TestModel(AbstractModel):
@@ -31,19 +33,24 @@ async def init_db():
 def router_components():
     """Fixture providing router components for testing."""
     schema = pydantic_model_creator(TestModel)
-    schema_create = pydantic_model_creator(TestModel, exclude_readonly=True)
+    schema_create = pydantic_model_creator(
+        TestModel, name="SchemaCreate", exclude_readonly=True
+    )
+    schema_update = partial_model(schema_create, "SchemaUpdate")
     crud = crud_for(TestModel, schema)
 
     router = BaseCRUDRouter(
         crud=crud,
         schema=schema,
         schema_create=schema_create,
+        schema_update=schema_update,
     )
 
     return {
         "router": router,
         "schema": schema,
         "schema_create": schema_create,
+        "schema_update": schema_update,
         "crud": crud,
     }
 
@@ -88,6 +95,7 @@ class TestHandlerSignatureUpdate:
         router = router_components["router"]
         schema = router_components["schema"]
         schema_create = router_components["schema_create"]
+        schema_update = router_components["schema_update"]
 
         # Create mock annotations with __name__ attributes
         class SchemaAnnotation:
@@ -95,6 +103,9 @@ class TestHandlerSignatureUpdate:
 
         class SchemaCreateAnnotation:
             __name__ = "SchemaCreate"
+
+        class SchemaUpdateAnnotation:
+            __name__ = "SchemaUpdate"
 
         class OtherAnnotation:
             __name__ = "SomeOtherType"
@@ -113,11 +124,16 @@ class TestHandlerSignatureUpdate:
             Parameter.POSITIONAL_OR_KEYWORD,
             annotation=SchemaCreateAnnotation(),
         )
+        update_param = Parameter(
+            "update_param",
+            Parameter.POSITIONAL_OR_KEYWORD,
+            annotation=SchemaUpdateAnnotation(),
+        )
         other_param = Parameter(
             "other_param", Parameter.POSITIONAL_OR_KEYWORD, annotation=OtherAnnotation()
         )
 
-        mock_sig = Signature([schema_param, create_param, other_param])
+        mock_sig = Signature([schema_param, create_param, update_param, other_param])
         mock_handler_with_sig = create_function(mock_sig, mock_handler)  # type: ignore
 
         # Test the update method
@@ -135,9 +151,10 @@ class TestHandlerSignatureUpdate:
         # Schema annotations should be replaced with actual types
         assert updated_params[0].annotation == schema
         assert updated_params[1].annotation == schema_create
+        assert updated_params[2].annotation == schema_update
         # Other annotations should remain unchanged (compare with the original instance)
-        assert updated_params[2].annotation.__class__ == OtherAnnotation
-        assert updated_params[2].annotation.__name__ == "SomeOtherType"
+        assert updated_params[3].annotation.__class__ == OtherAnnotation
+        assert updated_params[3].annotation.__name__ == "SomeOtherType"
 
     def test_partial_schema_replacement(self, router_components):
         """Test replacement when only some parameters have Schema annotations."""
@@ -197,6 +214,7 @@ class TestRouterInitialization:
         assert router.crud is crud
         assert router.schema is schema
         assert router.schema_create is schema_create
+        assert router.schema_update.__name__ == partial_model(schema_create).__name__
         assert router.limit == 50  # default
         assert router.offset == 0  # default
 
@@ -205,11 +223,13 @@ class TestRouterInitialization:
         crud = router_components["crud"]
         schema = router_components["schema"]
         schema_create = router_components["schema_create"]
+        schema_update = router_components["schema_update"]
 
         router = BaseCRUDRouter(
             crud=crud,
             schema=schema,
             schema_create=schema_create,
+            schema_update=schema_update,
             limit=100,
             offset=10,
             include_endpoints=[DefaultEndpoint.CREATE, DefaultEndpoint.GET_ALL],
@@ -223,6 +243,7 @@ class TestRouterInitialization:
         assert router.offset == 10
         assert router.prefix == "/test"
         assert router.tags == ["test"]
+        assert router.schema_update is schema_update
 
     def test_empty_include_endpoints(self, router_components):
         """Test router with empty include_endpoints list."""
