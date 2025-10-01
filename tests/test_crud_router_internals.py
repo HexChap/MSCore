@@ -9,7 +9,11 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 
 from ms_core.bases.abstract_model import AbstractModel
 from ms_core.bases.base_crud import crud_for
-from ms_core.bases.base_crud_router import BaseCRUDRouter, DefaultEndpoint
+from ms_core.bases.base_crud_router import (
+    BaseCRUDRouter,
+    DefaultEndpoint,
+    PartialEndpointConfig,
+)
 from ms_core.utils import partial_model
 
 
@@ -238,7 +242,6 @@ class TestRouterInitialization:
             prefix="/test",
             tags=["test"],
         )
-
         assert router.limit == 100
         assert router.offset == 10
         assert router.prefix == "/test"
@@ -261,3 +264,25 @@ class TestRouterInitialization:
 
         # Router should be created successfully with no routes
         assert len(router.routes) == 0
+
+    def test_merge_configs(self, router_components):
+        crud = router_components["crud"]
+        schema = router_components["schema"]
+        schema_create = router_components["schema_create"]
+
+        router = BaseCRUDRouter(
+            crud=crud,
+            schema=schema,
+            schema_create=schema_create,
+            include_endpoints=[DefaultEndpoint.GET_ITEM],
+            endpoint_configs={
+                DefaultEndpoint.GET_ITEM: PartialEndpointConfig(
+                    summary="Custom summary",
+                )
+            },
+        )
+
+        post_init_conf = router.endpoint_configs.get(DefaultEndpoint.GET_ITEM)
+        assert post_init_conf != router._get_default_endpoint_config(
+            DefaultEndpoint.GET_ITEM
+        )

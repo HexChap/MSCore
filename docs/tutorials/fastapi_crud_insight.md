@@ -75,6 +75,15 @@ class EndpointConfig(BaseModel):
     dependencies: list[Callable] | None = None
 ```
 
+You can use PartialEndpointConfig to override only the parameters you need —
+it will be merged with the default configuration.
+
+```python
+class PartialEndpointConfig(EndpointConfig):
+    path: str | None = None
+    methods: list[str] | None = None
+```
+
 This provides fine-grained control over each endpoint's FastAPI route configuration,
 including dependency injection support.
 

@@ -2,14 +2,11 @@
 
 import sys
 import importlib
-import os
 from pathlib import Path
 
 import pytest
-from fastapi import FastAPI, HTTPException
-from fastapi.testclient import TestClient
+from fastapi import FastAPI
 
-import ms_core as ms_module
 from ms_core import conf_db, include_routers, setup_app
 
 

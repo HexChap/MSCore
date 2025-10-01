@@ -111,6 +111,27 @@ router = BaseCRUDRouter(
 )
 ```
 
+With PartialEndpointConfig, you only need to specify the parameters you want to change.
+The missing values will be filled in from the default configuration.
+
+```py
+from ms_core.routers import BaseCRUDRouter, DefaultEndpoint, PartialEndpointConfig
+
+router = BaseCRUDRouter(
+    crud=user_crud,
+    schema=User_Pydantic,
+    schema_create=UserIn_Pydantic,
+    include_endpoints=[DefaultEndpoint.GET_ITEM],
+    endpoint_configs={
+        DefaultEndpoint.GET_ITEM: PartialEndpointConfig(
+            summary="Custom summary",
+        )
+    },
+    prefix="/users",
+    tags=["users"]
+)
+```
+
 ## Adding Dependencies
 
 You can add FastAPI dependencies to any endpoint using the `dependencies` field in `EndpointConfig`:

@@ -54,6 +54,11 @@ class EndpointConfig(BaseModel):
         return config_dict
 
 
+class PartialEndpointConfig(EndpointConfig):
+    path: str | None = None
+    methods: list[str] | None = None
+
+
 class BaseCRUDRouter[
     Schema: BaseModel,
     SchemaCreate: BaseModel,
@@ -69,7 +74,8 @@ class BaseCRUDRouter[
         offset: int = 0,
         include_endpoints: list[DefaultEndpoint] | Literal["all"] = "all",
         exclude_endpoints: list[DefaultEndpoint] | None = None,
-        endpoint_configs: dict[DefaultEndpoint, EndpointConfig] | None = None,
+        endpoint_configs: dict[DefaultEndpoint, EndpointConfig | PartialEndpointConfig]
+        | None = None,
         *args,
         **kwargs,
     ):
@@ -99,6 +105,7 @@ class BaseCRUDRouter[
         self.schema_update = (
             schema_update if schema_update else partial_model(schema_create)
         )
+        self.endpoint_configs = self._build_configs(endpoint_configs or {})
 
         # Determine which endpoints to include
         if include_endpoints == "all":
@@ -110,7 +117,33 @@ class BaseCRUDRouter[
             endpoints_to_include -= set(exclude_endpoints)
 
         # Build endpoint configurations
-        self._build_endpoints(endpoints_to_include, endpoint_configs or {})
+        self._build_endpoints(endpoints_to_include)
+
+    def _build_configs(
+        self, confs: dict[DefaultEndpoint, EndpointConfig | PartialEndpointConfig]
+    ) -> dict[DefaultEndpoint, EndpointConfig]:
+        """
+        For each DefaultEndpoint:
+          - if no config provided -> use default
+          - if full EndpointConfig provided -> use it (no merge)
+          - if PartialEndpointConfig provided -> merge it onto defaults
+        """
+
+        def build(ep: DefaultEndpoint) -> EndpointConfig:
+            default_conf = self._get_default_endpoint_config(ep)
+            default_data = default_conf.model_dump()
+            conf = confs.get(ep)
+
+            if conf is None:
+                merged = default_data
+            elif isinstance(conf, PartialEndpointConfig):
+                merged = default_data | conf.model_dump(exclude_none=True)
+            else:
+                merged = conf.model_dump()
+
+            return EndpointConfig(**merged)
+
+        return {ep: build(ep) for ep in DefaultEndpoint}
 
     def _get_default_endpoint_config(self, endpoint: DefaultEndpoint) -> EndpointConfig:
         """Get default configuration for a given endpoint"""
@@ -156,7 +189,6 @@ class BaseCRUDRouter[
     def _build_endpoints(
         self,
         endpoints_to_include: set[DefaultEndpoint],
-        endpoint_configs: dict[DefaultEndpoint, EndpointConfig],
     ):
         """Build and register all endpoints"""
 
@@ -174,7 +206,7 @@ class BaseCRUDRouter[
             handler = endpoint_handlers[endpoint_type]
 
             # Use custom config if provided, otherwise use default
-            config = endpoint_configs.get(
+            config = self.endpoint_configs.get(
                 endpoint_type
             ) or self._get_default_endpoint_config(endpoint_type)
 
