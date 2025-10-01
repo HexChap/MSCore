@@ -1,7 +1,9 @@
 from typing import Any, Type, TypeVar, overload
+
 from tortoise.contrib.pydantic import PydanticModel
 
-from ms_core.bases import CRUD, I18nModel
+from ms_core.bases.base_crud import CRUD
+from ms_core.bases.i18n_model import I18nModel
 
 M = TypeVar("M", bound=I18nModel)
 S = TypeVar("S", bound=PydanticModel)
